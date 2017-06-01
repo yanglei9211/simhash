@@ -4,6 +4,8 @@ import (
 	"crypto/md5"
 	"fmt"
 	"regexp"
+	"strings"
+	"go/token"
 )
 
 const f = 64
@@ -19,6 +21,7 @@ func hashfunc(x string) string{
 
 type Simhash struct {
 	data 		string
+	features	[]string
 	value 		uint64
 	f, win_size int
 }
@@ -33,11 +36,26 @@ func (s *Simhash) Init(data string) {
 	s.f = f
 }
 
-func (s *Simhash) Slide() []string {
-	res := make([]string, 0, len(s.data)-s.win_size+1)
-	for st := 0; st + s.win_size <= len(s.data); st++ {
-		p := s.data[st:st+s.win_size]
+
+func (s *Simhash) Tokenize() {
+	rs := strings.ToLower(s.data)
+	res := make([]string, 0, len(rs)-s.win_size+1)
+	for st := 0; st + s.win_size <= len(rs); st++ {
+		p := rs[st:st+s.win_size]
 		res = append(res, p)
 	}
-	return res
+	s.dataToken = res
+}
+
+func (s *Simhash) buildByText() {
+
+}
+
+func (s *Simhash) buildByFeatures() {
+	hashs := make([]string, 0, len(s.features))
+	for w := range(s.features){
+		hashs = append(hashs, hashfunc(w))
+	}
+	v := make([]int, s.f)
+
 }
