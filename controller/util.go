@@ -20,3 +20,9 @@ func (b *BasicController) writeReponse(r map[string]interface{}) {
 	}
 	b.Ctx.WriteString(string(response))
 }
+
+func bitsCount(num uint64) int {
+	num = num - ((num >> 1) & 0x5555555555555555)
+	num = (num & 0x3333333333333333) + ((num >> 2) & 0x3333333333333333)
+	return int((((num + (num >> 4)) & 0xF0F0F0F0F0F0F0F) * 0x101010101010101) >> 56)
+}
