@@ -1,0 +1,6 @@
+appname="simhash"
+httpport = 9002
+db_host = "127.0.0.1:27017"
+recoverpanic=true
+autorender=false
+enableadmin=false
