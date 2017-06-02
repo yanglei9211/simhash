@@ -8,6 +8,7 @@ import (
 )
 
 const f = 64
+const k = 2
 const win_size = 4
 //const reg = "[\u4e00-\u9fcca-zA-Z0-9_]+"
 const reg = `[\w\p{Han}]+`
@@ -30,9 +31,7 @@ type Simhash struct {
 }
 
 func (s *Simhash) Init(data string) {
-	fmt.Println(reg)
 	r := regexp.MustCompile(reg)
-	fmt.Println(r)
 	res := r.FindAllString(data, -1)
 	for _, rs := range res {
 		s.data += rs
@@ -53,6 +52,7 @@ func (s *Simhash) Tokenize() {
 		p := rs[st:st+s.win_size]
 		res = append(res, p)
 	}
+	fmt.Println(res)
 	s.features = res
 }
 
@@ -80,7 +80,6 @@ func (s *Simhash) buildByFeatures() {
 			}
 		}
 	}
-	fmt.Println(v)
 	var ans uint64
 	for i := 0; i < s.f; i++ {
 		if v[i] >= 0 {
@@ -89,3 +88,5 @@ func (s *Simhash) buildByFeatures() {
 	}
 	s.value = ans
 }
+
+
