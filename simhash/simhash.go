@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"unicode/utf8"
 )
 
 const f = 64
@@ -13,9 +14,9 @@ const win_size = 4
 //const reg = "[\u4e00-\u9fcca-zA-Z0-9_]+"
 const reg = `[\w\p{Han}]+`
 
-func hashfunc(x string) uint64{
+func hashfunc(x []rune) uint64{
 	h := md5.New()
-	h.Write([]byte(x))
+	h.Write([]byte(string(x)))
 	r := h.Sum(nil)
 	var res uint64
 	rs := fmt.Sprintf("%x", r[8:])
@@ -23,9 +24,13 @@ func hashfunc(x string) uint64{
 	return res
 }
 
+type UtlString struct {
+	s []rune
+}
+
 type Simhash struct {
-	data 		string
-	features	[]string
+	data 		[]rune
+	features	[][]rune
 	value 		uint64
 	f, win_size int
 }
@@ -33,9 +38,12 @@ type Simhash struct {
 func (s *Simhash) Init(data string) {
 	r := regexp.MustCompile(reg)
 	res := r.FindAllString(data, -1)
+	var strData string
 	for _, rs := range res {
-		s.data += rs
+		strData += rs
 	}
+	strData = strings.ToLower(strData)
+	s.data = String2Utf8(strData)
 	s.win_size = win_size
 	s.f = f
 	s.buildByText()
@@ -46,13 +54,11 @@ func (s *Simhash) Value() uint64 {
 }
 
 func (s *Simhash) Tokenize() {
-	rs := strings.ToLower(s.data)
-	res := make([]string, 0, len(rs)-s.win_size+1)
-	for st := 0; st + s.win_size <= len(rs); st++ {
-		p := rs[st:st+s.win_size]
+	res := make([][]rune, 0, len(s.data)-s.win_size+1)
+	for st := 0; st + s.win_size <= len(s.data); st++ {
+		p := s.data[st:st+s.win_size]
 		res = append(res, p)
 	}
-	fmt.Println(res)
 	s.features = res
 }
 
@@ -89,4 +95,15 @@ func (s *Simhash) buildByFeatures() {
 	s.value = ans
 }
 
-
+func String2Utf8(word string) []rune {
+	s := []byte(word)
+	res := make([]rune, 0, len(s))
+	for utf8.RuneCount(s) > 1 {
+		r, size := utf8.DecodeRune(s)
+		s = s[size:]
+		res = append(res, r)
+	}
+	r, _ := utf8.DecodeRune(s)
+	res = append(res, r)
+	return res
+}

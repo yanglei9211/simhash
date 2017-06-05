@@ -16,8 +16,17 @@ func main() {
 	runtime.GOMAXPROCS(runtime.NumCPU() - 1)
 	beego.Run()
 	*/
-	s1 := "54564654654"
-	ts := simhash.Simhash{}
-	ts.Init(s1)
-	fmt.Println(ts.Value())
+	ss := []string{"放大是否打算"}
+	res := []simhash.Simhash{}
+	for _, s := range ss {
+		sim := simhash.Simhash{}
+		sim.Init(s)
+		res = append(res, sim)
+	}
+	for _, r := range res {
+		fmt.Println(r.Value())
+	}
+	test := []simhash.IndexNode{}
+	s := simhash.SimhashIndex{}
+	s.Init(test)
 }

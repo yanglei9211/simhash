@@ -3,6 +3,8 @@ package controller
 import (
 	"github.com/astaxie/beego"
 	"encoding/json"
+	"unicode/utf8"
+	"fmt"
 )
 
 type BasicController struct {
