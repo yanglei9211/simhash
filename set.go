@@ -1,4 +1,4 @@
-package set
+package simhash
 
 type StrSet map[string]struct{}
 

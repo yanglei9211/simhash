@@ -2,7 +2,6 @@ package simhash
 
 import (
 	"fmt"
-	"cluster/set"
 )
 
 type IndexNode struct {
