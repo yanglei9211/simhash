@@ -1,3 +1,1 @@
-go get gopkg.in/mgo.v2
-go get github.com/astaxie/beego
-go get github.com/valyala/fasthttp
+基本是把python的simhash库翻译了一边...
