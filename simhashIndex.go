@@ -15,7 +15,7 @@ func (s *IndexNode)Init (sh Simhash, obj_id string) {
 }
 
 type SimhashIndex struct {
-	bucket map[string]set.StrSet
+	bucket map[string]StrSet
 	f, k int
 	offsets []int
 }
@@ -23,7 +23,7 @@ type SimhashIndex struct {
 func (s *SimhashIndex) Init(nodes []IndexNode){
 	s.f = f
 	s.k = k
-	s.bucket = make(map[string]set.StrSet)
+	s.bucket = make(map[string]StrSet)
 	s.offsets = make([]int, 0, s.k+1)
 	for i := 0; i < s.k+1; i++ {
 		s.offsets = append(s.offsets, s.f / (s.k+1) * i)
@@ -39,7 +39,7 @@ func (s *SimhashIndex) Add(node IndexNode) {
 	keys := s.getKeys(node.simhash.Value())
 	for _, key := range(keys) {
 		if _, found := s.bucket[key]; !found {
-			s.bucket[key] = set.StrSet{}
+			s.bucket[key] = StrSet{}
 		}
 		v := fmt.Sprintf("%x,%s", node.simhash.Value(), node.obj_id)
 		s.bucket[key].Add(v)
