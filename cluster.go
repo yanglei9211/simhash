@@ -26,7 +26,9 @@ func main() {
 	for _, r := range res {
 		fmt.Println(r.Value())
 	}
-	test := []simhash.IndexNode{}
+	n0 := simhash.IndexNode{}
+	n0.Init(res[0], "0")
+	test := []simhash.IndexNode{n0}
 	s := simhash.SimhashIndex{}
 	s.Init(test)
 }
