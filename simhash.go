@@ -49,6 +49,11 @@ func (s *Simhash) Init(data string) {
 	s.buildByText()
 }
 
+func (s *Simhash) InitByHex(h string, f int) {
+	s.f = f
+	fmt.Sscanf(h, "%x", &s.value)
+}
+
 func (s *Simhash) Value() uint64 {
 	return s.value
 }
@@ -95,6 +100,13 @@ func (s *Simhash) buildByFeatures() {
 	s.value = ans
 }
 
+func (s Simhash) distance(another Simhash) int{
+	if s.f != another.f {
+		panic("inter error, can't compare")
+	}
+	return bitsCount(s.value ^ another.value)
+}
+
 func String2Utf8(word string) []rune {
 	s := []byte(word)
 	res := make([]rune, 0, len(s))
@@ -106,4 +118,10 @@ func String2Utf8(word string) []rune {
 	r, _ := utf8.DecodeRune(s)
 	res = append(res, r)
 	return res
+}
+
+func bitsCount(num uint64) int {
+	num = num - ((num >> 1) & 0x5555555555555555)
+	num = (num & 0x3333333333333333) + ((num >> 2) & 0x3333333333333333)
+	return int((((num + (num >> 4)) & 0xF0F0F0F0F0F0F0F) * 0x101010101010101) >> 56)
 }
