@@ -49,7 +49,7 @@ func (s *Simhash) Init(data string) {
 	s.buildByText()
 }
 
-func (s *Simhash) InitByHex(h string, f int) {
+func (s *Simhash) InitByHex(h string) {
 	s.f = f
 	fmt.Sscanf(h, "%x", &s.value)
 }

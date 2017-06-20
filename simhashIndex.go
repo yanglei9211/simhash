@@ -6,12 +6,12 @@ import (
 )
 
 type IndexNode struct {
-	Simhash		Simhash
+	Sim		Simhash
 	ObjId 		string
 }
 
 func (s *IndexNode)Init (sh Simhash, obj_id string) {
-	s.Simhash = sh
+	s.Sim = sh
 	s.ObjId = obj_id
 }
 
@@ -35,20 +35,20 @@ func (s *SimhashIndex) Init(nodes []IndexNode){
 }
 
 func (s *SimhashIndex) Add(node IndexNode) {
-	keys := s.getKeys(node.Simhash.Value())
+	keys := s.getKeys(node.Sim.Value())
 	for _, key := range(keys) {
 		if _, found := s.bucket[key]; !found {
 			s.bucket[key] = StrSet{}
 		}
-		v := fmt.Sprintf("%x,%s", node.Simhash.Value(), node.ObjId)
+		v := fmt.Sprintf("%x,%s", node.Sim.Value(), node.ObjId)
 		s.bucket[key].Add(v)
 	}
 }
 
 func (s *SimhashIndex) Del(node IndexNode) {
-	keys := s.getKeys(node.Simhash.Value())
+	keys := s.getKeys(node.Sim.Value())
 	for _, key := range (keys) {
-		v := fmt.Sprintf("%x,%s", node.Simhash.Value(), node.ObjId)
+		v := fmt.Sprintf("%x,%s", node.Sim.Value(), node.ObjId)
 		if s.bucket[key].Has(v) {
 			s.bucket[key].Del(v)
 		}
@@ -99,7 +99,7 @@ func (s* SimhashIndex) GetNearDups(sim Simhash) []string {
 				sim2 = c[0]
 				objId = c[1]
 				tpSim := Simhash{}
-				tpSim.InitByHex(sim2, s.f)
+				tpSim.InitByHex(sim2)
 				dis := sim.distance(tpSim)
 				if dis <= s.k {
 					ans.Add(objId)
