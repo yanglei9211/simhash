@@ -19,7 +19,7 @@ func hashfunc(x []rune) uint64{
 	h.Write([]byte(string(x)))
 	r := h.Sum(nil)
 	var res uint64
-	rs := fmt.Sprintf("%x", r[8:])
+	rs := fmt.Sprintf("%x", r[len(r)-8:])
 	fmt.Sscanf(rs, "%x", &res)
 	return res
 }
@@ -59,9 +59,11 @@ func (s *Simhash) Value() uint64 {
 }
 
 func (s *Simhash) Tokenize() {
-	res := make([][]rune, 0, len(s.data)-s.win_size+1)
-	for st := 0; st + s.win_size <= len(s.data); st++ {
-		p := s.data[st:st+s.win_size]
+	sizes := Maxx(len(s.data) - s.win_size + 1, 1)
+	res := make([][]rune, 0, sizes)
+	for st := 0; st < sizes; st++ {
+		ed := Maxx(Minn(st + s.win_size, len(s.data)), 0)
+		p := s.data[st:ed]
 		res = append(res, p)
 	}
 	s.features = res
@@ -110,6 +112,9 @@ func (s Simhash) distance(another Simhash) int{
 func String2Utf8(word string) []rune {
 	s := []byte(word)
 	res := make([]rune, 0, len(s))
+	if word == "" {
+		return res
+	}
 	for utf8.RuneCount(s) > 1 {
 		r, size := utf8.DecodeRune(s)
 		s = s[size:]
@@ -124,4 +129,20 @@ func bitsCount(num uint64) int {
 	num = num - ((num >> 1) & 0x5555555555555555)
 	num = (num & 0x3333333333333333) + ((num >> 2) & 0x3333333333333333)
 	return int((((num + (num >> 4)) & 0xF0F0F0F0F0F0F0F) * 0x101010101010101) >> 56)
+}
+
+func Minn(x, y int) int {
+	if x < y {
+		return x
+	} else {
+		return y
+	}
+}
+
+func Maxx(x, y int) int {
+	if x < y {
+		return y
+	} else {
+		return x
+	}
 }
