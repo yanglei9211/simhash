@@ -1,14 +1,14 @@
 package simhash
 
 import (
-	"testing"
 	"fmt"
+	"testing"
 )
 
 func TestSimhash(t *testing.T) {
 	//
 
-	ss := []string{"放大是否打算","发生的旅客合法的顺口溜合法的索科洛夫哈萨克了会发生", "11223344", "aabbcc",
+	ss := []string{"放大是否打算", "发生的旅客合法的顺口溜合法的索科洛夫哈萨克了会发生", "11223344", "aabbcc",
 		"AABBCC", "AaBbcC", "放大和克赖斯基大师傅但撒风", "是电饭煲adfsgadsg阿嘎色噶多少 12341234",
 		"", "", "1", "23", "1122334455667788",
 	}
@@ -40,19 +40,56 @@ func TestSimhash(t *testing.T) {
 	t.Log("ok")
 }
 
+func TestSimhashIndex(t *testing.T) {
+	fmt.Println("test 2")
+	ss := []string{"放大是否打算", "发生的旅客合法的顺口溜合法的索科洛夫哈萨克了会发生", "11223344", "aabbcc",
+		"AABBCC", "AaBbcC", "放大和克赖斯基大师傅但撒风", "是电饭煲adfsgadsg阿嘎色噶多少 12341234",
+		"", "", "1", "23", "1122334455667788",
+	}
+	res := []Simhash{}
+	for _, s := range ss {
+		sim := Simhash{}
+		sim.Init(s)
+		res = append(res, sim)
+	}
+
+	test := []IndexNode{}
+	s := SimhashIndex{}
+	for idx := range res {
+		tpNode := IndexNode{res[idx], fmt.Sprintf("%d", idx)}
+		test = append(test, tpNode)
+	}
+	s.Init(test)
+
+	toTestStr := []string{"发生的旅客合法的顺口溜合法的索科洛夫哈萨克了会发生", "1", "23", "是电饭煲adfsgadsg阿嘎色噶多少 12341234"}
+	anss := []string{"1", "10", "11", "7"}
+	for i := range toTestStr {
+		ts := Simhash{}
+		ts.Init(toTestStr[i])
+		ans := s.GetNearDups(ts)
+		fmt.Println(ans[0], anss[i])
+		if len(ans) == 1 && ans[0] == anss[i] {
+			fmt.Println("check ok")
+		} else {
+			t.Error("error")
+		}
+
+	}
+}
+
 // d4  1d  8c  d9  8f 00 b2 04 e9 80  09 98 ec  f8  42 7e
 //[212 29 140 217 143 0 178 4 233 128 9 152 236 248 66 126]
 //
-	//h := md5.New()
-	//h.Write([]byte{})
-	//rr := h.Sum(nil)
-	//fmt.Println(rr)
-	//fmt.Println("------------")
-	////rrs := fmt.Sprintf("%x", rr)
-	//rrrs := fmt.Sprintf("%x", rr[8:])
-	//rrss := fmt.Sprintf("%x", rr[len(rr)-8:])
-	//fmt.Println(rrrs)
-	//fmt.Println(rrss)
-	//var res uint64
-	//fmt.Sscanf(rrrs, "%x", &res)
-	//fmt.Println(res)
+//h := md5.New()
+//h.Write([]byte{})
+//rr := h.Sum(nil)
+//fmt.Println(rr)
+//fmt.Println("------------")
+////rrs := fmt.Sprintf("%x", rr)
+//rrrs := fmt.Sprintf("%x", rr[8:])
+//rrss := fmt.Sprintf("%x", rr[len(rr)-8:])
+//fmt.Println(rrrs)
+//fmt.Println(rrss)
+//var res uint64
+//fmt.Sscanf(rrrs, "%x", &res)
+//fmt.Println(res)

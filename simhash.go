@@ -11,10 +11,11 @@ import (
 const f = 64
 const k = 2
 const win_size = 4
+
 //const reg = "[\u4e00-\u9fcca-zA-Z0-9_]+"
 const reg = `[\w\p{Han}]+`
 
-func hashfunc(x []rune) uint64{
+func hashfunc(x []rune) uint64 {
 	h := md5.New()
 	h.Write([]byte(string(x)))
 	r := h.Sum(nil)
@@ -29,9 +30,9 @@ type UtlString struct {
 }
 
 type Simhash struct {
-	data 		[]rune
-	features	[][]rune
-	value 		uint64
+	data        []rune
+	features    [][]rune
+	value       uint64
 	f, win_size int
 }
 
@@ -59,10 +60,10 @@ func (s *Simhash) Value() uint64 {
 }
 
 func (s *Simhash) Tokenize() {
-	sizes := Maxx(len(s.data) - s.win_size + 1, 1)
+	sizes := Maxx(len(s.data)-s.win_size+1, 1)
 	res := make([][]rune, 0, sizes)
 	for st := 0; st < sizes; st++ {
-		ed := Maxx(Minn(st + s.win_size, len(s.data)), 0)
+		ed := Maxx(Minn(st+s.win_size, len(s.data)), 0)
 		p := s.data[st:ed]
 		res = append(res, p)
 	}
@@ -76,7 +77,7 @@ func (s *Simhash) buildByText() {
 
 func (s *Simhash) buildByFeatures() {
 	hashs := make([]uint64, 0, len(s.features))
-	for _, w := range(s.features){
+	for _, w := range s.features {
 		hashs = append(hashs, hashfunc(w))
 	}
 	v := make([]int, s.f)
@@ -102,7 +103,7 @@ func (s *Simhash) buildByFeatures() {
 	s.value = ans
 }
 
-func (s Simhash) distance(another Simhash) int{
+func (s Simhash) distance(another Simhash) int {
 	if s.f != another.f {
 		panic("inter error, can't compare")
 	}
