@@ -3,6 +3,7 @@ package simhash
 import (
 	"fmt"
 	"testing"
+	"crypto/md5"
 )
 
 func TestSimhash(t *testing.T) {
@@ -75,6 +76,43 @@ func TestSimhashIndex(t *testing.T) {
 		}
 
 	}
+}
+
+func BenchmarkSimhash_Init(b *testing.B) {
+	ss := []string{
+		"过正方体上底面的对角线和下底面一顶点的平面截去一个三棱锥所得到的几何体如图所示它的俯视图为leftqquadright",
+
+	}
+	for i := 0; i < b.N; i++ {
+		for _, rs := range ss {
+			s := Simhash{}
+			s.Init(rs)
+		}
+	}
+}
+
+func BenchmarkMd5(b *testing.B) {
+	ss := []string{
+		"过正方体上底面的对角线和下底面一顶点的平面截去一个三棱锥所得到的几何体如图所示它的俯视图为leftqquadright",
+	}
+	for i := 0; i < b.N; i++ {
+		for _, rs := range ss {
+			h := md5.New()
+			h.Write([]byte(string(rs)))
+			h.Sum(nil)
+		}
+	}
+}
+
+func TestMd(t *testing.T) {
+	ss := "过正方体上底面的对角线和下底面一顶点的平面截去一个三棱锥所得到的几何体如图所示它的俯视图为leftqquadright"
+	h := md5.New()
+	h.Write([]byte(string(ss)))
+	r := h.Sum(nil)
+	fmt.Println(r)
+	s := Simhash{}
+	s.Init(ss)
+	fmt.Println(s.value)
 }
 
 // d4  1d  8c  d9  8f 00 b2 04 e9 80  09 98 ec  f8  42 7e
