@@ -1,9 +1,9 @@
 package simhash
 
 import (
+	"crypto/md5"
 	"fmt"
 	"testing"
-	"crypto/md5"
 )
 
 func TestSimhash(t *testing.T) {
@@ -81,7 +81,6 @@ func TestSimhashIndex(t *testing.T) {
 func BenchmarkSimhash_Init(b *testing.B) {
 	ss := []string{
 		"过正方体上底面的对角线和下底面一顶点的平面截去一个三棱锥所得到的几何体如图所示它的俯视图为leftqquadright",
-
 	}
 	for i := 0; i < b.N; i++ {
 		for _, rs := range ss {

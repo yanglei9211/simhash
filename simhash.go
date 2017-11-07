@@ -50,6 +50,11 @@ func (s *Simhash) Init(data string) {
 	s.buildByText()
 }
 
+func (s *Simhash) InitByValue(v uint64) {
+	s.f = f
+	s.value = v
+}
+
 func (s *Simhash) InitByHex(h string) {
 	s.f = f
 	fmt.Sscanf(h, "%x", &s.value)
@@ -57,6 +62,10 @@ func (s *Simhash) InitByHex(h string) {
 
 func (s *Simhash) Value() uint64 {
 	return s.value
+}
+
+func (s *Simhash) ValueHex() string {
+	return fmt.Sprintf("%x", s.value)
 }
 
 func (s *Simhash) Tokenize() {
